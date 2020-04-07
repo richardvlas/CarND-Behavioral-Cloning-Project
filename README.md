@@ -112,7 +112,23 @@ The following table shows the final model architecture:
 * Total params: 348,219
 * Trainable params: 348,219
 * Non-trainable params: 0
- 
+
+This model achitecture is defined in `nvidia_nn()` function. 
+
+
+### Model Training
+As a next step I configured the model for training. Specificaly, the command below (part of `nvidia_nn()` function)
+
+```python
+model.compile(optimizer='adam', loss='mse')
+```
+sets the type of optimizer to be used and the objective function to minimized. I selected `'adam'` algorithm which is an extension to stochastic gradient descent that updates network weights iteratively for each NN parameter instead of maintaining a single learning rate for all updates during training. This makes `'adam'` a great choice as it requires little tuning effort. 
+
+It's well worth to have a look on the training performance for different optimization algoritms to see how well Adam outperforms some of the other types of optimizators. Here is provided [here](https://machinelearningmastery.com/adam-optimization-algorithm-for-deep-learning/). 
+
+The steering angle command prediction we are trying to solve in this project represents a classical regression problem. Regression problem optimization can be mathematically achieved by minimizing an objective function. A suitable objective function is for example **mean squared error** function. Therefore, the next paramter to be set in `model.compile()` is `loss='mse'`  
+
+
 
 ### Data Preprocessing and Data Augmentation 
 
