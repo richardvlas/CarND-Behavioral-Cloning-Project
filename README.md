@@ -14,7 +14,7 @@ This project uses deep neural networks and convolutional neural networks to trai
 
 ### Submitted Files
 The project includes the following files:
-* `readme.md` - A markdown file explaining the project structure and training approach
+* `README.md` - A markdown file explaining the project structure and training approach
 * `model.py` - The script used to create and train the model
 * `drive.py` - The script to drive the car
 * `model.h5` - The saved deep learning model
@@ -42,16 +42,78 @@ I first tried to use LeNet neural network to see how well the model would predic
 So, I decided to use a more powerfull network. One of the more advanced model architectures is a convolutional neural network published by vehicle team at NVIDIA that maps raw pixels from a camera directly to steering commands. 
 Here is a [link](http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) that describes the model in detail.
 
-The network has about 27 million connections and 250 thousand parameters as shown in the following figure
+The network has about 27 million connections and 250 thousand parameters as shown in the following figure:
 
-<img src="img/NVIDIA_CNN.png" width="75%" height="75%">
-
-
+<img src="img/NVIDIA_CNN.png" width="50%" height="50%">
 
 
-started by using 
+The network consists of 9 layers, including a normalization layer, 5 convolutional layers and 3 fully connected layers. 
 
-The selection of the neural network model I used 
+I took this architecture as a baseline and performed few modifications. The input to the network is different from the original model, since the training images come in shape of 160x320px with 3 color channels (RGB) that are passed to the network. The first layer performs image preprocessing: Normalization and mean centering. This was implemented using `Lambda` layer:
+
+```python
+Lambda(lambda x: x / 255.0 - 0.5, input_shape=(160,320,3))
+```
+
+The next layer is used to crops the images on top 70px and on bottom 25px. This step is done to make sure that the images capture mainly the road and nothing else that would complicate the training from these images. It also reduces training time as the image size gets smaller. This was implemented using `Cropping2D` layer:
+
+```python
+Cropping2D(cropping=((70,25), (0,0)))
+```
+
+Next, series of 5 convolutional layers with striding an relu activation function was added. The first three convolutional layers use a 2×2 stride and a 5×5 kernel and the last two convolutional layers use a 1x1 stride convolution with a 3×3 kernel size.
+
+```python
+Conv2D(24, (5, 5), strides=(2, 2), activation="relu")
+Conv2D(36, (5, 5), strides=(2, 2), activation="relu")
+Conv2D(48, (5, 5), strides=(2, 2), activation="relu")
+Conv2D(64, (3, 3), strides=(1, 1), activation="relu")
+Conv2D(64, (3, 3), strides=(1, 1), activation="relu")
+```
+
+The output from the last convolutional layer is first flattened into shape of 2112 inputs and then feeded into a series of 3 fully connected layers. The first fully connected layer consists of 100 output units. To avoid overfitting a dropout layer is added with 35% dropout probability. A next fully connected layer with 50 output units is again used and followed by a dropout layer. The third fully connected layer has 10 outputs and no dropout layer is used anymore.
+
+```python
+Flatten()
+Dense(100)
+Dropout(rate=0.35)
+Dense(50)
+Dropout(rate=0.35)
+Dense(10)
+```
+
+Since the output from the neural network model is predicting one value (steering angle command), a fully connected layer with one output unit is used here.
+
+```python
+Dense(1)
+```
+
+**Final model architecture**
+
+The following table shows the final model architecture:
+
+|Layer|Description|Param #|
+|---|---|---|
+|Input | 160x320x3 image|0|
+|Lambda| Normalization & mean centering, output 160x320x3| 0|
+|Cropping2D | Crop input images, output 65x320x3 | 0|
+|Convolution 5x5| 2x2 stride, activation:relu, output 31x158x24| 1824|
+|Convolution 5x5| 2x2 stride, activation:relu, output 14x77x36| 21636|
+|Convolution 5x5| 2x2 stride, activation:relu, output 5x37x48| 43248|
+|Convolution 3x3| 1x1 stride, activation:relu, output 3x35x64| 27712|
+|Convolution 3x3| 1x1 stride, activation:relu, output 1x33x64| 36928|
+|Flatten| output 2112| 0|
+|Fully connected| output 100| 211300|
+|Dropout|drop probability 35%| 0|
+|Fully connected| output 50| 5050|
+|Dropout|drop probability 35%| 0| 
+|Fully connected| output 10| 510|
+|Fully connected| output 1| 11|
+
+* Total params: 348,219
+* Trainable params: 348,219
+* Non-trainable params: 0
+ 
 
 ### Data Preprocessing and Data Augmentation 
 
