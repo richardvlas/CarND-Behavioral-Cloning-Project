@@ -48,7 +48,7 @@ Total number of collected images (per camera): **11555**
 
 Here is a visualization of steering angle command versus image #:
 
-<img src="img/steer_command.png" width="75%" height="75%">
+<img src="img/steer_command.png" width="40%" height="40%">
 
 
 Note that the first part image 0 to image 7000 represents driving on the 1st track, while the last part represents driving on the 2nd track. One can notice that the steering angle command values are much larger for the 2nd track as the track consists of sharp left and right turns. Such data can very well generalize the model as we will see later on. 
@@ -60,17 +60,25 @@ In order to explain why I decided to follow my strategy for collecting the train
 It's clear from the histogram that the distribution is left skewed representing a bias in steering angle command as we drove the vehicle in counter-clock wise direction.
 
 
-All data collected on the first track (including recovery and smooth driving through curves)
+The next figure shows all data collected on the first track (including clock-wise, recovery and smooth driving through curves)
 
 <img src="img/steer_command_hist_track_1.png" width="75%" height="75%">
 
-Second track (jungle) driving
+Although the distribution slightly improves it's still left skewed.
+
+
+The last portion of data collected represents driving 1 lap on second track (jungle) driving 
+
 <img src="img/steer_command_hist_track_2.png" width="75%" height="75%">
 
+The steering command data are distributed much more symetric that when driving on the 1st track. This proves that the data are indeed suitable for the training to generalize the model.
+
+
 All images combined creates dataset with the folowing symmetric distribution. A nice symmetric distribution
+
 <img src="img/steer_command_hist.png" width="75%" height="75%">
 
-
+Using these data we have a baseline dataset that will be expanded as describe in the next section to create even more data for the training.
 
 ## Loading Data, Preprocessing and Data Augmentation
 
