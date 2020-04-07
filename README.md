@@ -123,30 +123,20 @@ the total number of images loaded and created by data augmentation is equal to: 
 
 and so we have 6x more images (2 more camera images at each timestep and 2x more data due to augmentation) to be used for training and validation respectively.
 
-We have 
-
 All 69330 images combined create dataset with the folowing distribution
 
-<img src="img/steer_command_hist_data_proc_aug.png" width="75%" height="75%">
-
+<img src="img/steer_command_hist_data_proc_aug.png" width="45%" height="45%">
 
 The disadvantage of the `load_images()` function is that it loads all images in memory at once and so for large datasets would allocate too much memory making this function memory inefficient!
 
 A better approach would be to define a Generator function which is an efficient way of building iterators in Python. Iterators are memory-efficient in the sense that they can process a desired portion of data at a given time instead of loading all data at once.
 
 Here we define a generator that will be used later on in the training of the model:
-
 ```Python
 generator(samples, fliped=False, all_cameras=False, correction=0.1, batch_size=32)
 ```
 
-It take one additional parameter `batch_size` which specifies number of input images to yield at once
-
-
-
-
-
-
+It takes one additional parameter `batch_size` which specifies number of input images to yield at once
 
 
 
