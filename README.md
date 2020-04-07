@@ -29,12 +29,57 @@ python drive.py model.h5
 Once the model is up and running in drive.py, you should see the car move around
 
 
-
 Below I will consider the [rubric points](https://review.udacity.com/#!/rubrics/1968/view) of this project individually and describe how I addressed each point in my implementation. Here is the link to my [project exploratory code](Behavioral_Cloning.ipynb).
 
 ## Training Data Collection
 
-## Data Preprocessing and Data Augmentation
+The goal of this project is to drive down the center of the the road. To achieve this, it's necessary to capture a good driving behavior which means driving the vehicle in the center of the road while capturing the training images. 
+
+**My strategy for collecting the training data**:
+* Drive 2 laps counter-clockwise on the 1st track while staying in the center of the road as much as possible
+* Drive 1 lap and record recovery from side of the road - this helps the model learn coming back to the center of the road  
+* Drive 1 lap counter-clockwise while staying in the center of the road as much as possible - the model learns to generalize
+* Record driving through sharp curves (each curve 2x times) - sharp curves are difficult task for the model to learn, so increasing the amount of data for the model to learn from
+* Drive 1 lap on the 2nd track to help generalize the model
+
+The vehicle simulator collects images from 3 cameras which can be used for the model training to improve the accuracy especially for recovery driving from road sides. More details in next section. 
+
+Total number of collected images (per camera): **11555**
+
+Here is a visualization of steering angle command versus image #:
+
+<img src="img/steer_command.png" width="75%" height="75%">
+
+
+Note that the first part image 0 to image 7000 represents driving on the 1st track, while the last part represents driving on the 2nd track. One can notice that the steering angle command values are much larger for the 2nd track as the track consists of sharp left and right turns. Such data can very well generalize the model as we will see later on. 
+
+In order to explain why I decided to follow my strategy for collecting the training data, let's first look on the steering angle command distribution for data collected on the first track driving it counter-clockwise for approximately 2 laps:
+
+<img src="img/steer_command_hist_2_laps.png" width="75%" height="75%">
+
+It's clear from the histogram that the distribution is left skewed representing a bias in steering angle command as we drove the vehicle in counter-clock wise direction.
+
+
+All data collected on the first track (including recovery and smooth driving through curves)
+
+<img src="img/steer_command_hist_track_1.png" width="75%" height="75%">
+
+Second track (jungle) driving
+<img src="img/steer_command_hist_track_2.png" width="75%" height="75%">
+
+All images combined creates dataset with the folowing symmetric distribution. A nice symmetric distribution
+<img src="img/steer_command_hist.png" width="75%" height="75%">
+
+
+
+## Loading Data, Preprocessing and Data Augmentation
+
+
+flipping the images is a quick way to augment the data
+
+
+
+
 
 ## Model Architecture and Training Strategy
 This section describes the deep neural network model deployed and the training strategy used.
@@ -282,4 +327,16 @@ Epoch 00027: early stopping
 ## Simulation and Model Testing
 
 
+
+
+
+
+Testing Your Network
+Once you're satisfied that the model is making good predictions on the training and validation sets, you can test your model by launching the simulator and entering autonomous mode.
+
+The car will just sit there until your Python server connects to it and provides it steering angles. Here’s how you start your Python server:
+
+python drive.py model.h5
+
+Once the model is up and running in drive.py, you should see the car move around (and hopefully not off) the track! If your model has low mean squared error on the training and validation sets but is driving off the track, this could be because of the data collection process. It's important to feed the network examples of good driving behavior so that the vehicle stays in the center and recovers when getting too close to the sides of the road.
 
