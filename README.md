@@ -18,6 +18,7 @@ The project includes the following files:
 * `model.py` - The script used to create and train the model
 * `drive.py` - The script to drive the car
 * `model.h5` - The saved deep learning model
+* `best_model.h5` - The saved deep learning model due to 'early stopping' function
 * `video.mp4` - A video recording of the vehicle driving autonomously one lap around the track
 
 ### Running the Model
