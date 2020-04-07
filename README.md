@@ -319,5 +319,5 @@ To meet the project specifications:
 
 The video below shows the final model driving the vehicle in autonomous mode:
 
-![](autonomous_driving.gif)
+![](img/autonomous_driving.gif)
 
