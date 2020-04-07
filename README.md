@@ -296,6 +296,7 @@ This will train the model on data generated batch-by-batch by the Python generat
 To monitor training and validation loss metrics a model history object which is returned from `model.fit_generator()` is saved under `history_object` variable that contains both loss functions for each epoch. 
 
 Here is the visualization of training/validation loss vs epoch #:
+
 <img src="img/Nvidia_3_cams_flip_generator.png" width="45%" height="45%">
 
 The `best_model.h5` file contains model parameters from epoch=27. The training was terminated due to 'early stopping' at this epoch. The file `model.h5` contains parameters from the last epoch and it is not necessarily the best model from the training as can be seen from the validation loss figure, with the loss being slightly increased.
@@ -303,17 +304,20 @@ The `best_model.h5` file contains model parameters from epoch=27. The training w
 
 ## Simulation and Model Testing
 
+Once the model is trained making good predictions on the training and validation sets, you can test the model by launching the simulator and entering autonomous mode.
 
+```python
+python drive.py best_model.h5
+```
 
+Once the model is up and running in drive.py, you will see the car move around. 
 
+To meet the project specifications: 
+* The car must successfully drive around track one
+* No tire may leave the drivable portion of the track surface
+* The car may not pop up onto ledges or roll over any surfaces that would otherwise be considered unsafe (if humans were in the vehicle)
 
+The video below shows the final model driving the vehicle in autonomous mode:
 
-Testing Your Network
-Once you're satisfied that the model is making good predictions on the training and validation sets, you can test your model by launching the simulator and entering autonomous mode.
-
-The car will just sit there until your Python server connects to it and provides it steering angles. Here’s how you start your Python server:
-
-python drive.py model.h5
-
-Once the model is up and running in drive.py, you should see the car move around (and hopefully not off) the track! If your model has low mean squared error on the training and validation sets but is driving off the track, this could be because of the data collection process. It's important to feed the network examples of good driving behavior so that the vehicle stays in the center and recovers when getting too close to the sides of the road.
+![](autonomous_driving.gif)
 
