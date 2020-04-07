@@ -35,7 +35,7 @@ Below I will consider the [rubric points](https://review.udacity.com/#!/rubrics/
 
 The goal of this project is to drive down the center of the the road. To achieve this, it's necessary to capture a good driving behavior which means driving the vehicle in the center of the road while capturing the training images. 
 
-**My strategy for collecting the training data**:
+**My strategy for collecting training data**:
 * Drive 2 laps counter-clockwise on the 1st track while staying in the center of the road as much as possible
 * Drive 1 lap and record recovery from side of the road - this helps the model learn coming back to the center of the road  
 * Drive 1 lap counter-clockwise while staying in the center of the road as much as possible - the model learns to generalize
@@ -67,23 +67,72 @@ The next figure shows all data collected on the first track (including clock-wis
 Although the distribution slightly improves it's still left skewed.
 
 
-The last portion of data collected represents driving 1 lap on second track (jungle) driving 
+The last portion of data collected represents driving 1 lap on second track (jungle) 
 
 <img src="img/steer_command_hist_track_2.png" width="75%" height="75%">
 
-The steering command data are distributed much more symetric that when driving on the 1st track. This proves that the data are indeed suitable for the training to generalize the model.
+The steering command data is distributed much more symetric than when driving on the 1st track alone. This proves that the data is indeed suitable for the training to generalize the model.
 
 
-All images combined creates dataset with the folowing symmetric distribution. A nice symmetric distribution
+All images combined create dataset with the folowing distribution
 
 <img src="img/steer_command_hist.png" width="75%" height="75%">
 
-Using these data we have a baseline dataset that will be expanded as describe in the next section to create even more data for the training.
+A nice symmetric distribution that can help the model to learn predict the steering angle command easier.
+
+Using these data we have a baseline dataset that will be expanded as describe in the next section in order to create even more image data for the training.
 
 ## Loading Data, Preprocessing and Data Augmentation
 
+This section explain how the collected images are loaded and futher processed to make the most use of them.
 
+A function called `load_images()` to implement all these steps was defined as
+
+```Python
+load_images(img_path, fliped=False, all_cameras=False, correction=0.1)
+```
+
+* `img_path`    - path to image log file
+
+* `fliped`      - data augmentation by flipping images and steering measurements around vertical axis
+
+Flipping images and steering measurements is an effective technique to reduce turn bias whenever the data skewed distributed. An example of image and its flipped version is shown below 
+
+|steering angle = -0.103|steering angle = 0.103|
+|---|---|
+|<img src="img/center_2020_04_05_12_43_58_782.jpg">|<img src="img/center_2020_04_05_12_43_58_782_flipped.jpg">|
+
+* `all_cameras` - if set to `True` all 3 cameras will be loaded and used
+* `correction`  - correction factor to create adjusted steering measurements for the side camera images 
+
+This factor helps correct the steering angle command value due to the shifted location of the side cameras. This ensures that the model doen't learn to steer either too soft or too strong when learning from side cameras.
+
+Here is an example of an image captured with from all cameras at a certain time showing the steering angle command adjusted with correction factor `correction=0.1`   
+
+|st. angle = -0.003|st. angle = -0.103|st. angle = -0.203|
+|---|---|---|
+| <img src="img/left_2020_04_05_12_43_58_782.jpg"> | <img src="img/center_2020_04_05_12_43_58_782.jpg"> | <img src="img/right_2020_04_05_12_43_58_782.jpg"> |
+
+
+
+
+
+
+The disadvantage of the `load_images()` function is that it loads all images in memory at once and so for large datasets would allocate to much memory making this function memory inefficient!
+
+A better approach would be to define a Generator function which is an efficient way of building iterators in Python. Iterators are memory-efficient in the sense that it can process only a desired portion of data at a given time.
+
+Here we define a generator that will be later on used in the training of the model:
+
+```Python
+generator????????????
+```
+
+which can cause memory 
 flipping the images is a quick way to augment the data
+
+
+
 
 
 
