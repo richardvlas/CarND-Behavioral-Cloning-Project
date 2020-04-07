@@ -32,6 +32,9 @@ Once the model is up and running in drive.py, you should see the car move around
 
 Below I will consider the [rubric points](https://review.udacity.com/#!/rubrics/1968/view) of this project individually and describe how I addressed each point in my implementation. Here is the link to my [project exploratory code](Behavioral_Cloning.ipynb).
 
+## Training Data Collection
+
+## Data Preprocessing and Data Augmentation
 
 ## Model Architecture and Training Strategy
 This section describes the deep neural network model deployed and the training strategy used.
@@ -115,8 +118,6 @@ The following table shows the final model architecture:
 
 This model achitecture is defined in `nvidia_nn()` function. 
 
-
-### Model Training
 As a next step I configured the model for training. Specificaly, the command below (part of `nvidia_nn()` function)
 
 ```python
@@ -128,11 +129,40 @@ It's well worth to have a look on the training performance for different optimiz
 
 The steering angle command prediction we are trying to solve in this project represents a classical regression problem. Regression problem optimization can be mathematically achieved by minimizing an objective function. A suitable objective function is for example **mean squared error** function. Therefore, the next paramter to be set in `model.compile()` is `loss='mse'`  
 
+### Model Training
+Having the model architecture defined, the training step can be conducted. As mentioned in previous [section](????????  ????????) a Python generator will be used to load and preprocess image training data in batches which is much more memory-efficient than loading all image data in memory at once.
+
+First two generators one for training and one for validation step are saved as
+
+```python
+train_generator      = generator(train_samples, fliped=True, all_cameras=True, 
+                                 correction=0.1, batch_size=batch_size)
+validation_generator = generator(validation_samples, fliped=True, all_cameras=True, 
+                                 correction=0.1, batch_size=batch_size)
+```
+
+Train the model for a fixed number of epochs
+
+
+history_object = model.fit_generator(train_generator, 
+                                     steps_per_epoch=np.ceil(len(train_samples)/batch_size), 
+                                     validation_data=validation_generator, 
+                                     validation_steps=np.ceil(len(validation_samples)/batch_size), 
+                                     epochs=20,
+                                     callbacks=[early_stop, model_ckp],
+                                     verbose=1)
+
+
+HOW I USED GENERATORS for training
+
+To monitor training and validation loss metrics I saved a model history object which is returned from `model.fit_generator()` and contains both loss functions for each epoch. Here is the visualization of training/validation loss vs epoch #:
+
+
+
 
 
 ### Data Preprocessing and Data Augmentation 
 
-### Model Training
 
 
 ## Simulation and Model Testing
