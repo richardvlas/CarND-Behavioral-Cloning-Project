@@ -176,23 +176,107 @@ history_object = model.fit_generator(train_generator,
                                      steps_per_epoch=np.ceil(len(train_samples)/batch_size), 
                                      validation_data=validation_generator, 
                                      validation_steps=np.ceil(len(validation_samples)/batch_size), 
-                                     epochs=20,
+                                     epochs=30,
                                      callbacks=[early_stop, model_ckp],
                                      verbose=1)
 ```
 
-This will train the model on data generated batch-by-batch by the Python generator for 20 epochs. 
+This will train the model on data generated batch-by-batch by the Python generator for 30 epochs unless early stopping is activated.
 
-To monitor training and validation loss metrics a model history object which is returned from `model.fit_generator()` is saved under `history_object` and which contains both loss functions for each epoch. 
+To monitor training and validation loss metrics a model history object which is returned from `model.fit_generator()` is saved under `history_object` variable that contains both loss functions for each epoch. 
 
 Here is the visualization of training/validation loss vs epoch #:
 
+<img src="img/Nvidia_3_cams_flip_generator.png" width="45%" height="45%">
+
+The `best_model.h5` contains model from epoch=17 ??????????. In the file called `model.h5` the last epoch is saved and it is not necessarily the best model from the training.
 
 
 
+BELOW is the training output shown:
 
-### Data Preprocessing and Data Augmentation 
-
+Epoch 1/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0225Epoch 00001: val_loss improved from inf to 0.01325, saving model to ./models/best_model.h5
+145/145 [==============================] - 94s 650ms/step - loss: 0.0225 - val_loss: 0.0133
+Epoch 2/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0129Epoch 00002: val_loss improved from 0.01325 to 0.01055, saving model to ./models/best_model.h5
+145/145 [==============================] - 92s 637ms/step - loss: 0.0129 - val_loss: 0.0106
+Epoch 3/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0105Epoch 00003: val_loss improved from 0.01055 to 0.00950, saving model to ./models/best_model.h5
+145/145 [==============================] - 92s 631ms/step - loss: 0.0105 - val_loss: 0.0095
+Epoch 4/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0088Epoch 00004: val_loss improved from 0.00950 to 0.00718, saving model to ./models/best_model.h5
+145/145 [==============================] - 92s 634ms/step - loss: 0.0088 - val_loss: 0.0072
+Epoch 5/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0083Epoch 00005: val_loss improved from 0.00718 to 0.00661, saving model to ./models/best_model.h5
+145/145 [==============================] - 91s 627ms/step - loss: 0.0082 - val_loss: 0.0066
+Epoch 6/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0077Epoch 00006: val_loss did not improve
+145/145 [==============================] - 91s 631ms/step - loss: 0.0077 - val_loss: 0.0073
+Epoch 7/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0071Epoch 00007: val_loss did not improve
+145/145 [==============================] - 90s 622ms/step - loss: 0.0071 - val_loss: 0.0069
+Epoch 8/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0068Epoch 00008: val_loss improved from 0.00661 to 0.00570, saving model to ./models/best_model.h5
+145/145 [==============================] - 91s 629ms/step - loss: 0.0067 - val_loss: 0.0057
+Epoch 9/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0061Epoch 00009: val_loss did not improve
+145/145 [==============================] - 91s 630ms/step - loss: 0.0061 - val_loss: 0.0061
+Epoch 10/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0059Epoch 00010: val_loss improved from 0.00570 to 0.00549, saving model to ./models/best_model.h5
+145/145 [==============================] - 91s 630ms/step - loss: 0.0059 - val_loss: 0.0055
+Epoch 11/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0055Epoch 00011: val_loss improved from 0.00549 to 0.00525, saving model to ./models/best_model.h5
+145/145 [==============================] - 88s 609ms/step - loss: 0.0055 - val_loss: 0.0053
+Epoch 12/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0050Epoch 00012: val_loss improved from 0.00525 to 0.00504, saving model to ./models/best_model.h5
+145/145 [==============================] - 88s 606ms/step - loss: 0.0050 - val_loss: 0.0050
+Epoch 13/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0050Epoch 00013: val_loss improved from 0.00504 to 0.00480, saving model to ./models/best_model.h5
+145/145 [==============================] - 88s 607ms/step - loss: 0.0050 - val_loss: 0.0048
+Epoch 14/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0046Epoch 00014: val_loss did not improve
+145/145 [==============================] - 88s 608ms/step - loss: 0.0046 - val_loss: 0.0050
+Epoch 15/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0045Epoch 00015: val_loss did not improve
+145/145 [==============================] - 88s 608ms/step - loss: 0.0045 - val_loss: 0.0049
+Epoch 16/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0042Epoch 00016: val_loss improved from 0.00480 to 0.00470, saving model to ./models/best_model.h5
+145/145 [==============================] - 88s 607ms/step - loss: 0.0042 - val_loss: 0.0047
+Epoch 17/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0042Epoch 00017: val_loss did not improve
+145/145 [==============================] - 88s 607ms/step - loss: 0.0042 - val_loss: 0.0053
+Epoch 18/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0040Epoch 00018: val_loss improved from 0.00470 to 0.00434, saving model to ./models/best_model.h5
+145/145 [==============================] - 88s 609ms/step - loss: 0.0040 - val_loss: 0.0043
+Epoch 19/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0038Epoch 00019: val_loss did not improve
+145/145 [==============================] - 87s 602ms/step - loss: 0.0038 - val_loss: 0.0046
+Epoch 20/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0037Epoch 00020: val_loss did not improve
+145/145 [==============================] - 87s 601ms/step - loss: 0.0037 - val_loss: 0.0044
+Epoch 21/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0037Epoch 00021: val_loss improved from 0.00434 to 0.00413, saving model to ./models/best_model.h5
+145/145 [==============================] - 89s 612ms/step - loss: 0.0037 - val_loss: 0.0041
+Epoch 22/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0033Epoch 00022: val_loss did not improve
+145/145 [==============================] - 88s 605ms/step - loss: 0.0033 - val_loss: 0.0042
+Epoch 23/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0032Epoch 00023: val_loss did not improve
+145/145 [==============================] - 88s 603ms/step - loss: 0.0032 - val_loss: 0.0046
+Epoch 24/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0033Epoch 00024: val_loss improved from 0.00413 to 0.00412, saving model to ./models/best_model.h5
+145/145 [==============================] - 93s 640ms/step - loss: 0.0033 - val_loss: 0.0041
+Epoch 25/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0031Epoch 00025: val_loss did not improve
+145/145 [==============================] - 89s 615ms/step - loss: 0.0031 - val_loss: 0.0042
+Epoch 26/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0031Epoch 00026: val_loss did not improve
+145/145 [==============================] - 86s 595ms/step - loss: 0.0031 - val_loss: 0.0044
+Epoch 27/30
+144/145 [============================>.] - ETA: 0s - loss: 0.0032Epoch 00027: val_loss did not improve
+145/145 [==============================] - 89s 617ms/step - loss: 0.0032 - val_loss: 0.0042
+Epoch 00027: early stopping
 
 
 ## Simulation and Model Testing
