@@ -102,7 +102,7 @@ Flipping images and steering measurements is an effective technique to reduce tu
 |---|---|
 |<img src="img/center_2020_04_05_12_43_58_782.jpg">|<img src="img/center_2020_04_05_12_43_58_782_flipped.jpg">|
 
-* `all_cameras` - if set to `True` all 3 cameras will be loaded and used
+* `all_cameras` - if set to `True` all 3 camera images will be loaded and used
 * `correction`  - correction factor to create adjusted steering measurements for the side camera images 
 
 This factor helps correct the steering angle command value due to the shifted location of the side cameras. This ensures that the model doen't learn to steer either too soft or too strong when learning from side cameras.
@@ -113,23 +113,35 @@ Here is an example of an image captured with from all cameras at a certain time 
 |---|---|---|
 | <img src="img/left_2020_04_05_12_43_58_782.jpg"> | <img src="img/center_2020_04_05_12_43_58_782.jpg"> | <img src="img/right_2020_04_05_12_43_58_782.jpg"> |
 
-
-
-
-
-
-The disadvantage of the `load_images()` function is that it loads all images in memory at once and so for large datasets would allocate to much memory making this function memory inefficient!
-
-A better approach would be to define a Generator function which is an efficient way of building iterators in Python. Iterators are memory-efficient in the sense that it can process only a desired portion of data at a given time.
-
-Here we define a generator that will be later on used in the training of the model:
+If call the function with the parameters set to `True`
 
 ```Python
-generator????????????
+load_images(img_path, fliped=True, all_cameras=True, correction=0.1)
 ```
 
-which can cause memory 
-flipping the images is a quick way to augment the data
+the total number of images loaded and created by data augmentation is equal to: **69330**
+
+and so we have 6x more images (2 more camera images at each timestep and 2x more data due to augmentation) to be used for training and validation respectively.
+
+We have 
+
+All 69330 images combined create dataset with the folowing distribution
+
+<img src="img/steer_command_hist_data_proc_aug.png" width="75%" height="75%">
+
+
+The disadvantage of the `load_images()` function is that it loads all images in memory at once and so for large datasets would allocate too much memory making this function memory inefficient!
+
+A better approach would be to define a Generator function which is an efficient way of building iterators in Python. Iterators are memory-efficient in the sense that they can process a desired portion of data at a given time instead of loading all data at once.
+
+Here we define a generator that will be used later on in the training of the model:
+
+```Python
+generator(samples, fliped=False, all_cameras=False, correction=0.1, batch_size=32)
+```
+
+It take one additional parameter `batch_size` which specifies number of input images to yield at once
+
 
 
 
