@@ -132,7 +132,7 @@ The steering angle command prediction we are trying to solve in this project rep
 ### Model Training
 Having the model architecture defined, the training step can be conducted. As mentioned in previous [section](????????  ????????) a Python generator will be used to load and preprocess image training data in batches which is much more memory-efficient than loading all image data in memory at once.
 
-First two generators one for training and one for validation step are saved as
+First two generators (one for training and one for validation) are saved as
 
 ```python
 train_generator      = generator(train_samples, fliped=True, all_cameras=True, 
@@ -141,9 +141,37 @@ validation_generator = generator(validation_samples, fliped=True, all_cameras=Tr
                                  correction=0.1, batch_size=batch_size)
 ```
 
-Train the model for a fixed number of epochs
+Next, the neural network model with dropout set to 35% is saved as
+```python
+model = nvidia_nn(dropout=0.35)
+```
+
+One of the challenges when training neural networks is to set appropriate number of epochs before the training is terminated.
+Keras offers a great solution to this problem by using Callbacks which is a set of functions to be applied at given stages of the training procedure. 
+
+Two callback functions can be used to ensure the model stops at appropriate time, doesn't overfit and the best model from the training phase is saved: `EarlyStopping` and `ModelCheckpoint`:
+
+`EarlyStopping` called as: 
+
+```python
+early_stop = EarlyStopping(monitor='val_loss', verbose=1, patience=3)
+```
+stops the training when a monitored quantity has stopped improving. Here the quantity to be monitored is the validation loss.
+The `patience` parameter specifies number of epochs that produced the monitored quantity with no improvement after which training will be stopped.
+
+`ModelCheckpoint` called as:
+
+```python
+model_ckp = ModelCheckpoint('./models/best_model.h5', monitor='val_loss', 
+                            verbose=1, save_best_only=True)
+```
+saves the model after every epoch. But since `save_best_only=True` only the the latest best model with respect to validation loss will be saved.
 
 
+Last step is to train the model for a fixed number of epochs by calling `model.fit_generator()`:
+
+
+```python
 history_object = model.fit_generator(train_generator, 
                                      steps_per_epoch=np.ceil(len(train_samples)/batch_size), 
                                      validation_data=validation_generator, 
@@ -151,11 +179,13 @@ history_object = model.fit_generator(train_generator,
                                      epochs=20,
                                      callbacks=[early_stop, model_ckp],
                                      verbose=1)
+```
 
+This will train the model on data generated batch-by-batch by the Python generator for 20 epochs. 
 
-HOW I USED GENERATORS for training
+To monitor training and validation loss metrics a model history object which is returned from `model.fit_generator()` is saved under `history_object` and which contains both loss functions for each epoch. 
 
-To monitor training and validation loss metrics I saved a model history object which is returned from `model.fit_generator()` and contains both loss functions for each epoch. Here is the visualization of training/validation loss vs epoch #:
+Here is the visualization of training/validation loss vs epoch #:
 
 
 
