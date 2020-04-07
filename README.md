@@ -34,7 +34,7 @@ Below I will consider the [rubric points](https://review.udacity.com/#!/rubrics/
 
 
 ## Model Architecture and Training Strategy
-This section describes the deep neural network model deployed and the training strategy used
+This section describes the deep neural network model deployed and the training strategy used.
 
 ### Model Architecture
 I first tried to use LeNet neural network to see how well the model would predict steering angle command. I mainly used it to get started with the project and develop the training pipeline since I was already familiar with the model. Nevertheless, the model seemed not to predict the steering command accurately in all cases. Especially in sharp curves without lane markings the model went off the road. 
@@ -42,12 +42,11 @@ I first tried to use LeNet neural network to see how well the model would predic
 So, I decided to use a more powerfull network. One of the more advanced model architectures is a convolutional neural network published by vehicle team at NVIDIA that maps raw pixels from a camera directly to steering commands. 
 Here is a [link](http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) that describes the model in detail.
 
-The network has about 27 million connections and 250 thousand parameters as shown in the following figure:
-
-<img src="img/NVIDIA_CNN.png" width="50%" height="50%">
+The network consists of 9 layers, including a normalization layer, 5 convolutional layers and 3 fully connected layers. It has about 27 million connections and 250 thousand parameters as shown in the figure below:
 
 
-The network consists of 9 layers, including a normalization layer, 5 convolutional layers and 3 fully connected layers. 
+<img src="img/NVIDIA_CNN.png" width="45%" height="45%">
+
 
 I took this architecture as a baseline and performed few modifications. The input to the network is different from the original model, since the training images come in shape of 160x320px with 3 color channels (RGB) that are passed to the network. The first layer performs image preprocessing: Normalization and mean centering. This was implemented using `Lambda` layer:
 
